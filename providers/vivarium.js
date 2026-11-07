@@ -284,7 +284,20 @@ function fetchSubtitles(query, nonces) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
+var CACHE_MS = 10 * 60 * 1000;  // reopening the same title inside this window returns instantly
+var cache = {};
+
 function getStreams(tmdbId, mediaType, season, episode) {
+  var key = [tmdbId, mediaType, season || '', episode || ''].join(':');
+  var hit = cache[key];
+  if (hit && Date.now() - hit.t < CACHE_MS) { log('cache hit', key); return Promise.resolve(hit.v); }
+  return fetchStreams(tmdbId, mediaType, season, episode).then(function (v) {
+    if (v && v.length) cache[key] = { t: Date.now(), v: v };
+    return v;
+  });
+}
+
+function fetchStreams(tmdbId, mediaType, season, episode) {
   log('getStreams', tmdbId, mediaType, season, episode);
   if (!VG_COOKIE || VG_COOKIE.indexOf('__') === 0) { log('VG_COOKIE is not set: see the top of providers/vivarium.js'); return Promise.resolve([]); }
   var isTv = mediaType === 'tv';
