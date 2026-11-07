@@ -302,7 +302,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
         var best = all[0];
         log('best', best.provider, best.quality, 'rank', best.rank, 'subs', subs.length);
         var out = [toStream(best, 'Vivarium - Auto (Best)', subs)];
-        if (SHOW_ALL) all.forEach(function (c) { if (c !== best) out.push(toStream(c, null, subs)); });
+        if (SHOW_ALL) all.forEach(function (c) { out.push(toStream(c, null, subs)); }); // best is listed again under its own name
         return out;
       });
     });
