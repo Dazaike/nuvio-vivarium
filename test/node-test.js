@@ -3,7 +3,7 @@
 // of the returned stream.   node test/node-test.js
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const { verifyHls } = require('./verify-hls');
-const code = fs.readFileSync(path.join(__dirname, '..', 'providers', 'vivarium.js'), 'utf8');
+const code = fs.readFileSync(process.env.PROVIDER_FILE || path.join(__dirname, '..', 'providers', 'vivarium.js'), 'utf8');
 if (/__(VG_COOKIE|USER_AGENT|VIV_CV|VIV_CVKEY|VIV_SIG_KEY)__/.test(code)) { console.error('provider constants are not filled in'); process.exit(1); }
 
 const logs = [];
