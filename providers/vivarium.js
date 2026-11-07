@@ -28,7 +28,7 @@ var VIV_CVKEY = '6e6d98ec8a7d741a20f242fd8a233ddb09227ebf72f213a16e53096abf6c357
 // 64 ASCII bytes used as the HMAC-SHA256 key (recovered from the site's hkf9.bin signer: data[0..64] ^ data[64 + (i & 7)]).
 var VIV_SIG_KEY = '6af5200a03de9a234734d3ef385c84490dc4164881e408450b6c35973803bded';
 
-var SHOW_ALL = false;        // true = also list every source after the Auto pick
+var SHOW_ALL = true;         // list every source after the Auto pick
 var WANT_SUBTITLES = true;   // fetch English subtitles (/api/os) and attach them to the stream as data: URIs
 var MAX_SUBTITLES = 2;
 var MAX_SUBTITLE_BYTES = 400000;
