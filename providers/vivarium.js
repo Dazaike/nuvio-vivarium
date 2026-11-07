@@ -34,7 +34,8 @@ var MAX_SUBTITLES = 2;
 var MAX_SUBTITLE_BYTES = 400000;
 var REQUEST_TIMEOUT_MS = 12000;
 var DEBUG = true;
-function log() { if (DEBUG) console.log.apply(console, ['[Vivarium]'].concat([].slice.call(arguments))); }
+var T0 = Date.now();
+function log() { if (DEBUG) console.log.apply(console, ['[Vivarium +' + (Date.now() - T0) + 'ms]'].concat([].slice.call(arguments))); }
 
 // Provider reliability / preference, measured by downloading master -> variant -> first segment (see README).
 // Added on top of the server's own `rank` (about the video height). Big negatives = verified dead or unusably slow.
@@ -298,6 +299,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
 }
 
 function fetchStreams(tmdbId, mediaType, season, episode) {
+  T0 = Date.now();
   log('getStreams', tmdbId, mediaType, season, episode);
   if (!VG_COOKIE || VG_COOKIE.indexOf('__') === 0) { log('VG_COOKIE is not set: see the top of providers/vivarium.js'); return Promise.resolve([]); }
   var isTv = mediaType === 'tv';
