@@ -43,6 +43,9 @@ var PROVIDER_ADJUST = {
   Hyperion: -20, // good segments, but a 1.5 MB master and it answered 429 on the third request of one burst
   Kratos: -1000  // playlist request never answers on most titles (3 of 4 timed out in testing)
 };
+// Display order (and Auto pick): first provider that returned streams wins; unlisted providers (Orion, Theia, Hyperion) go last.
+var PROVIDER_ORDER = ['Poseidon', 'Hermes', 'Boreas', 'Kratos', 'Zeus', 'Aura'];
+function orderIdx(p) { var i = PROVIDER_ORDER.indexOf(p); return i < 0 ? PROVIDER_ORDER.length : i; }
 var OPT_PENALTY = 1200;      // `opt` streams are the 4K "only for capable devices" ladder: do not pick by default
 var HEVC_PENALTY = 150;
 var HDR_PENALTY = 100;
@@ -298,7 +301,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
       log('events', events.length, 'candidates', all.length);
       if (!all.length) { log('no sources (empty reply usually means a stale VIV_CV/VIV_CVKEY pair: run tools/refresh-constants.js)'); return []; }
       return subsP.then(function (subs) {
-        all.sort(function (a, b) { return score(b, subs.length) - score(a, subs.length); });
+        all.sort(function (a, b) { return (orderIdx(a.provider) - orderIdx(b.provider)) || (score(b, subs.length) - score(a, subs.length)); });
         var best = all[0];
         log('best', best.provider, best.quality, 'rank', best.rank, 'subs', subs.length);
         var out = [toStream(best, 'Vivarium - Auto (Best)', subs)];
