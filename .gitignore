@@ -1,0 +1,4 @@
+.secrets/
+re/
+node_modules/
+tools/_inject-from-secrets.js

@@ -1,0 +1,19 @@
+{
+  "name": "Vivarium",
+  "author": "local",
+  "version": "1.0.0",
+  "scrapers": [
+    {
+      "id": "vivarium",
+      "name": "Vivarium",
+      "description": "Movies and TV via vivarium.su (HLS). One Auto (Best) stream. Needs your own vg cookie, see providers/vivarium.js",
+      "version": "1.0.0",
+      "author": "local",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/vivarium.js",
+      "enabled": true,
+      "formats": ["m3u8"],
+      "contentLanguage": ["en"]
+    }
+  ]
+}
