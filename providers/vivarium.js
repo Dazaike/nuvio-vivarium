@@ -23,8 +23,8 @@ var USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (
 var SITE = 'https://vivarium.su';
 // Build constants of the current vivarium.su front end (x-cv header + the 64-hex value appended to every signed message).
 // They change when the site ships a new build; `node tools/refresh-constants.js` re-extracts them from the live site.
-var VIV_CV = 'dcfa7a1ee84d';
-var VIV_CVKEY = '6e6d98ec8a7d741a20f242fd8a233ddb09227ebf72f213a16e53096abf6c3572';
+var VIV_CV = '67cc5c10e515';
+var VIV_CVKEY = '4f5ca3473bd9c4d1e8e2eaf775f33a5058832f953a01d545bf39e9a58c63232b';
 // 64 ASCII bytes used as the HMAC-SHA256 key (recovered from the site's hkf9.bin signer: data[0..64] ^ data[64 + (i & 7)]).
 var VIV_SIG_KEY = '6af5200a03de9a234734d3ef385c84490dc4164881e408450b6c35973803bded';
 
@@ -192,7 +192,7 @@ function signedGet(path, nonce, what) {
 
 function getNonces() {
   return plainGet('/api/n', '/api/n').then(function (r) {
-    if (r.status === 403) { log('403 from vivarium.su: VG_COOKIE expired / wrong USER_AGENT / Cookie header not sent (see top of providers/vivarium.js)'); return []; }
+    if (r.status === 403) { log('403 from vivarium.su: VG_COOKIE expired / wrong USER_AGENT / Cookie header not sent (enter new values in the app: Plugins > Vivarium > Settings)'); return []; }
     return r.ok ? r.json() : [];
   }).then(function (a) { return a && a.length ? a : []; })
     .catch(function (e) { log('ERROR /api/n', String(e && e.message || e)); return []; });
@@ -298,10 +298,19 @@ function getStreams(tmdbId, mediaType, season, episode) {
   });
 }
 
+// Values the user typed into the app (Nuvio KE: Settings > Content & Discovery > Plugins > Vivarium > Settings) win over the
+// constants above, so the cookie never has to be committed to a public repository. Other hosts have no SCRAPER_SETTINGS.
+function applyAppSettings() {
+  var s = (typeof SCRAPER_SETTINGS !== 'undefined' && SCRAPER_SETTINGS) || {};
+  if (typeof s.vg_cookie === 'string' && s.vg_cookie) VG_COOKIE = s.vg_cookie;
+  if (typeof s.user_agent === 'string' && s.user_agent) USER_AGENT = s.user_agent;
+}
+
 function fetchStreams(tmdbId, mediaType, season, episode) {
   T0 = Date.now();
+  applyAppSettings();
   log('getStreams', tmdbId, mediaType, season, episode);
-  if (!VG_COOKIE || VG_COOKIE.indexOf('__') === 0) { log('VG_COOKIE is not set: see the top of providers/vivarium.js'); return Promise.resolve([]); }
+  if (!VG_COOKIE || VG_COOKIE.indexOf('__') === 0) { log('VG_COOKIE is not set: enter it in the app (Plugins > Vivarium > Settings) or see the top of providers/vivarium.js'); return Promise.resolve([]); }
   var isTv = mediaType === 'tv';
   var query = 'id=' + encodeURIComponent(tmdbId) + '&type=' + (isTv ? 'tv' : 'movie') + (isTv ? '&s=' + (season || 1) + '&e=' + (episode || 1) : '');
 

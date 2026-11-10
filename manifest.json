@@ -1,17 +1,21 @@
 {
   "name": "Vivarium",
   "author": "local",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "scrapers": [
     {
       "id": "vivarium",
       "name": "Vivarium",
       "description": "Movies and TV via vivarium.su (HLS). One Auto (Best) stream. Needs your own vg cookie, see providers/vivarium.js",
-      "version": "1.0.5",
+      "version": "1.0.7",
       "author": "local",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/vivarium.js",
       "enabled": true,
+      "settings": [
+        { "key": "vg_cookie", "label": "vg cookie", "description": "Value of the vg cookie of vivarium.su (a CAPTCHA pass, not a login).", "placeholder": "paste the vg value" },
+        { "key": "user_agent", "label": "User-Agent", "description": "The exact User-Agent of the browser the cookie came from.", "placeholder": "Mozilla/5.0 ..." }
+      ],
       "formats": ["m3u8"],
       "contentLanguage": ["en"]
     }
